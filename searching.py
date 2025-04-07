@@ -12,7 +12,8 @@ def read_data(file_name, field):
     :param field: (str), field of a dict to return
     :return: (list, string),
     """
-    with open(file_name, "r") as file_obj:
+    file_path = os.path.join(cwd_path, file_name)
+    with open(file_path, "r") as file_obj:
         data = json.load(file_obj)
         if field in data:
             data = data[field]
@@ -20,26 +21,41 @@ def read_data(file_name, field):
             return None
 
     return data
-    #file_path = os.path.join(cwd_path, file_name)
 
 def linear_search(unordered_nums, key):
-    list_idx = []
-    count = 0
-    values_dict = dict()
-    for index, number in enumerate(unordered_nums):
-        if number == key:
-            list_idx.append(index)
-            count = count + 1
+    list_idx = [] #+1
+    count = 0 # +1
+    values_dict = dict() # +1
+    for index, number in enumerate(unordered_nums): # +n
+        if number == key: # +n
+            list_idx.append(index) # +n
+            count = count + 1 #+n
         else:
             continue
-    values_dict["positions"] = list_idx
-    values_dict["count"] = count
+    values_dict["positions"] = list_idx # +1
+    values_dict["count"] = count # +1    - SLOZITOST 4n + 4 == O(n) - JEDEN CYKLUS, CO JDE PRES CELY SEZNAM
     return values_dict
 
+def pattern_search(dna_sequence, key):
+    i = 0
+    triplets = len(key)
+    idx_set = set()
+    dna_sequence = "ATGACGGAATATAAGCTAGGTGGTGGCTGGGCAGTCCGCGCTGATAGGGCAAGAGTGCGCGTACCATACCACGCTAAGCCATATAGGGCATCAGTCAGCCTGGCA"
+    for i in range(len(dna_sequence) - (triplets - 1)):
+        if dna_sequence[i:triplets] == key:
+            idx_set.add(i)
+            i = i + 1
+            triplets = triplets + 1
+        else:
+            i = i + 1
+            triplets = triplets + 1
+    return idx_set
+
 def main():
-    sequential_data = read_data("sequential.json", "unordered_numbers")
+    sequential_data = read_data("sequential.json", "dna_sequence")
     print(sequential_data)
     print(linear_search(sequential_data, 9))
+    print(pattern_search(sequential_data, "ATA"))
 
 if __name__ == '__main__':
     main()
